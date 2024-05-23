@@ -1,0 +1,55 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Scrollen in alle Richtungen deaktivieren */
+}
+
+#map {
+    height: calc(100% - 76px); /* Höhe von Header und Footer zusammen */
+}
+
+#header {
+    display: flex; /* Flexbox verwenden */
+    justify-content: center; /* Text horizontal zentrieren */
+    align-items: center; /* Text vertikal zentrieren */
+    position: relative; /* Position relativ setzen */
+    z-index: 1000; /* Den Header über die Karte legen */
+    height: 60px; /* Erhöhen Sie die Höhe des Headers nach Bedarf */
+    background: #007D1C;
+    color: white;
+    font-size: 24px; /* Schriftgröße nach Bedarf */
+    vertical-align: top; /* Text am oberen Rand ausrichten */
+}
+
+#footer {
+    position: fixed; /* Position fixieren */
+    bottom: 0; /* Am unteren Rand des Browsers positionieren */
+    width: 100%; /* Vollständige Breite des Browsers */
+    height: 36px;
+    background: #007D1C;
+    color: white;
+    text-align: center;
+    font-size: 12px;
+    padding: 5px;
+    z-index: 1000; /* Den Footer über die Karte legen */
+}
+
+.legend {
+    background-color: white;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.legend-item {
+    display: flex;
+    justify-content: center; /* Horizontale Ausrichtung zentrieren */
+    align-items: center; /* Vertikale Ausrichtung zentrieren */
+}
+
+.legend-text {
+    margin-left: 10px; /* Abstand zwischen Symbol und Text */
+    font-size: 18px; /* Schriftgröße anpassen */
+    font-weight: bold; /* Fett anzeigen */
+}
