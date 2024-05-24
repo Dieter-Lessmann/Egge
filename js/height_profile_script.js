@@ -152,4 +152,3 @@ function getLatLngFromChartX(chartX) {
     }
     return null;
 }
-};
