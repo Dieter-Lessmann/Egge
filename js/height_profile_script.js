@@ -6,7 +6,7 @@ function loadCoordinates() {
 }
 
 // Deklaration der Variable außerhalb des Ereignishandlers
-var coordinates = loadCoordinates();
+var coordinates;
 
 // Funktion zur Erstellung des Höhenprofils
 function createHeightProfile(coordinates, cumulativeDistances, canvas) {
@@ -76,14 +76,14 @@ function createHeightProfile(coordinates, cumulativeDistances, canvas) {
                 },
                 onHover: function(evt, elements) {
                     if (elements.length > 0) {
-                        try {
-                            const index = elements[0].index;
-                            const latLng = getLatLngFromChartX(index);
-                            if (latLng && window.opener && window.opener.updateMarker) {
+                        const index = elements[0].index;
+                        const latLng = getLatLngFromChartX(index);
+                        if (latLng) {
+                            try {
                                 window.opener.updateMarker(latLng[0], latLng[1]);
+                            } catch (error) {
+                                console.error("Error calling updateMarker:", error);
                             }
-                        } catch (error) {
-                            console.error("Cross-origin error:", error);
                         }
                     }
                 }
@@ -152,14 +152,4 @@ function getLatLngFromChartX(chartX) {
     }
     return null;
 }
-
-// Initialisiere das Höhenprofil bei Seitenladezeit
-window.onload = function() {
-    if (coordinates) {
-        var cumulativeDistances = calculateCumulativeDistances(coordinates);
-        var canvas = document.getElementById('heightProfileCanvas');
-        createHeightProfile(coordinates, cumulativeDistances, canvas);
-    } else {
-        console.error("Coordinates could not be loaded.");
-    }
 };
