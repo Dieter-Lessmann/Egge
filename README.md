@@ -1,2 +1,2 @@
 # OutdoorActivitys
- Outdoor Akticitäten
+ Outdoor Aktivitäten
