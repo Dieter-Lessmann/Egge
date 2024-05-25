@@ -1,36 +1,17 @@
 <!DOCTYPE html>
-<html lang="DE-de">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Höhenprofil</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@latest/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@latest/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/track_egge_2.js"></script>
-    <script src="js/height_profile_script.js"></script>
+    <script src="js/height_profile_script.js" defer></script>
 </head>
 <body>
     <!-- Body-Inhalt -->
-    <canvas id="heightProfile"></canvas>
-    <script>
-		window.onload = function() {
-			var canvas = document.getElementById("heightProfile");
-			if (canvas) {
-				// Lade die Koordinaten und rufe dann die Funktion zur Erstellung des Höhenprofils auf
-				var coordinates = loadCoordinates();
-				var cumulativeDistances = calculateCumulativeDistances(coordinates);
-				createHeightProfile(coordinates, cumulativeDistances, canvas);
-			} else {
-				console.error("Canvas element not found.");
-			}
-			
-		    // Funktion zum Aktualisieren der Markerposition
-		function updateMarker(lat, lng) {
-			currentMarker.setLatLng([lat, lng]);
-			currentMarker.setOpacity(1); // Sichtbar machen
-			map.panTo([lat, lng]);
-		};
-	}
-    </script>
+    <canvas id="heightProfile" width="800" height="400"></canvas>
 </body>
 </html>
