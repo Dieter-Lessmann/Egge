@@ -80,7 +80,7 @@ function createHeightProfile(coordinates, cumulativeDistances, canvas) {
                         const latLng = getLatLngFromChartX(index);
                         if (latLng) {
                             try {
-                                window.opener.updateMarker(latLng[0], latLng[1]);
+                                updateMarker(latLng[0], latLng[1]);
                             } catch (error) {
                                 console.error("Error calling updateMarker:", error);
                             }
@@ -172,8 +172,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Funktion zum Aktualisieren der Markerposition
     window.updateMarker = function(lat, lng) {
-        currentMarker.setLatLng([lat, lng]);
-        currentMarker.setOpacity(1); // Sichtbar machen
-        map.panTo([lat, lng]);
+        // Deine Logik zum Aktualisieren des Markers hier
+        console.log(`Marker updated to: ${lat}, ${lng}`);
     };
 });
