@@ -6,7 +6,7 @@ function loadCoordinates() {
 }
 
 // Deklaration der Variable außerhalb des Ereignishandlers
-var coordinates;
+var coordinates = loadCoordinates(); // Lade die Koordinaten direkt bei der Initialisierung
 
 // Funktion zur Erstellung des Höhenprofils
 function createHeightProfile(coordinates, cumulativeDistances, canvas) {
@@ -143,6 +143,12 @@ function deg2rad(deg) {
 
 // Funktion zum Abrufen der Lat/Lng aus der X-Koordinate des Diagramms
 function getLatLngFromChartX(chartX) {
+    // Überprüfe, ob coordinates definiert ist
+    if (!coordinates) {
+        console.error("Coordinates are not defined.");
+        return null;
+    }
+
     // Index des nächstgelegenen Punkts im Track finden
     const index = Math.round(chartX);
     if (index >= 0 && index < coordinates.length) {
@@ -152,3 +158,11 @@ function getLatLngFromChartX(chartX) {
     }
     return null;
 }
+
+// Hier wird das Profil erstellt, nachdem die Koordinaten und Distanzen geladen wurden
+document.addEventListener("DOMContentLoaded", function() {
+    coordinates = loadCoordinates();
+    const cumulativeDistances = calculateCumulativeDistances(coordinates);
+    const canvas = document.getElementById("heightProfileCanvas");
+    createHeightProfile(coordinates, cumulativeDistances, canvas);
+});
