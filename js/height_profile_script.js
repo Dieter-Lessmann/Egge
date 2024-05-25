@@ -6,7 +6,7 @@ function loadCoordinates() {
 }
 
 // Deklaration der Variable außerhalb des Ereignishandlers
-var coordinates = loadCoordinates(); // Lade die Koordinaten direkt bei der Initialisierung
+var coordinates;
 
 // Funktion zur Erstellung des Höhenprofils
 function createHeightProfile(coordinates, cumulativeDistances, canvas) {
@@ -163,6 +163,17 @@ function getLatLngFromChartX(chartX) {
 document.addEventListener("DOMContentLoaded", function() {
     coordinates = loadCoordinates();
     const cumulativeDistances = calculateCumulativeDistances(coordinates);
-    const canvas = document.getElementById("heightProfileCanvas");
-    createHeightProfile(coordinates, cumulativeDistances, canvas);
+    const canvas = document.getElementById("heightProfile");
+    if (canvas) {
+        createHeightProfile(coordinates, cumulativeDistances, canvas);
+    } else {
+        console.error("Canvas element not found.");
+    }
+
+    // Funktion zum Aktualisieren der Markerposition
+    window.updateMarker = function(lat, lng) {
+        currentMarker.setLatLng([lat, lng]);
+        currentMarker.setOpacity(1); // Sichtbar machen
+        map.panTo([lat, lng]);
+    };
 });
