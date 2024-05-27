@@ -174,5 +174,12 @@ document.addEventListener("DOMContentLoaded", function() {
     window.updateMarker = function(lat, lng) {
         // Deine Logik zum Aktualisieren des Markers hier
         console.log(`Marker updated to: ${lat}, ${lng}`);
+        if (currentMarker) {
+            currentMarker.setLatLng([lat, lng]);
+            currentMarker.setOpacity(1); // Sichtbar machen
+            map.panTo([lat, lng]);
+        } else {
+            console.error("Marker is not defined.");
+        }
     };
 });
