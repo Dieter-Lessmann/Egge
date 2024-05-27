@@ -24,17 +24,6 @@
                 console.error("Canvas element not found.");
             }
         };
-
-        // Funktion zum Aktualisieren der Markerposition
-        function updateMarker(lat, lng) {
-            if (currentMarker) {
-                currentMarker.setLatLng([lat, lng]);
-                currentMarker.setOpacity(1); // Sichtbar machen
-                map.panTo([lat, lng]);
-            } else {
-                console.error("Marker is not defined.");
-            }
-        };
     </script>
 </body>
 </html>
