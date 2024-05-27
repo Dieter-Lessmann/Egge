@@ -48,6 +48,14 @@
             margin-left: 10px;
         }
     </style>
+    <style>
+      .leaflet-container a.leaflet-popup-close-button {
+        display: none;
+      }
+      .leaflet-default-icon-path {
+        background-image: url('https://unpkg.com/leaflet@1.7.1/dist/images/');
+      }
+    </style>
 </head>
 <body>
     <div id="header"><p>Eggewanderung</p></div>
@@ -61,7 +69,7 @@
     </div>
 
     <div class="legend">
-        '<div class="legend-item"><i class="fa fa-map-marker" style="color:#006ff"></i><span class="legend-text">Legende</span></div>',
+        <div class="legend-item"><i class="fa fa-map-marker" style="color:#0066ff"></i><span class="legend-text">Legende</span></div>
         <span class="legend-text">Legende</span>
     </div>
 
@@ -155,7 +163,7 @@
                             marker = L.circleMarker(latlng, {
                                 radius: 8,
                                 fillColor: "#0066ff",
-                                color: "##0066ff",
+                                color: "#0066ff",
                                 weight: 0.8,
                                 opacity: 1,
                                 fillOpacity: 0.6
@@ -205,23 +213,23 @@
     
             var legend = L.control({ position: 'bottomright' });
     
-        legend.onAdd = function () {
-            var div = L.DomUtil.create('div', 'legend');
-            var labels = [
-                '<div class="legend-item"><i class="fa fa-map-marker" style="color:#0066ff"></i><span class="legend-text">Legende</span></div>',
-                '<img src="icons/Track-Menue.png" style="width:16px;height:16px;"> Track',
-                '<img src="icons/logo-twitter.svg" style="width:16px;height:16px;"> Adlerwarte',
-                '<img src="icons/car.svg" style="width:16px;height:16px;"> Treffpunkt - Parkplatz Adlerwarte',
-                '<img src="icons/golf.svg" style="width:16px;height:16px;"> Falkenburg',
-                '<img src="icons/flag.svg" style="width:16px;height:16px;"> Externsteine',
-                '<img src="icons/cafe.svg" style="width:16px;height:16px;"> Waldesruh Wanderhotel Externsteine',
-                '<img src="icons/location.svg" style="width:16px;height:16px;"> Rigi Hütte',
-                '<img src="icons/restaurant.svg" style="width:16px;height:16px;"> Landhaus Hirschsprung'
-            ];
-            div.innerHTML = labels.join('<br>');
-            return div;
-        };
-
+            legend.onAdd = function () {
+                var div = L.DomUtil.create('div', 'legend');
+                var labels = [
+                    '<div class="legend-item"><i class="fa fa-map-marker" style="color:#0066ff"></i><span class="legend-text">Legende</span></div>',
+                    '<img src="icons/Track-Menue.png" style="width:16px;height:16px;"> Track',
+                    '<img src="icons/logo-twitter.svg" style="width:16px;height:16px;"> Adlerwarte',
+                    '<img src="icons/car.svg" style="width:16px;height:16px;"> Treffpunkt - Parkplatz Adlerwarte',
+                    '<img src="icons/golf.svg" style="width:16px;height:16px;"> Falkenburg',
+                    '<img src="icons/flag.svg" style="width:16px;height:16px;"> Externsteine',
+                    '<img src="icons/cafe.svg" style="width:16px;height:16px;"> Waldesruh Wanderhotel Externsteine',
+                    '<img src="icons/location.svg" style="width:16px;height:16px;"> Rigi Hütte',
+                    '<img src="icons/restaurant.svg" style="width:16px;height:16px;"> Landhaus Hirschsprung'
+                ];
+                div.innerHTML = labels.join('<br>');
+                return div;
+            };
+    
             legend.addTo(map);
         }
     
@@ -231,9 +239,9 @@
             heightProfileWindow.onload = function () {
                 if (!heightProfileWindow.loaded) {
                     heightProfileWindow.loaded = true;
-        
+    
                     var heights = coordinates.map(coord => coord[2]);
-        
+    
                     var ctx = heightProfileWindow.document.getElementById('heightProfile').getContext('2d');
                     var chart = new Chart(ctx, {
                         type: 'line',
@@ -267,7 +275,7 @@
                 }
             };
         }
-
+    
         function createTrackPopup(coordinates) {
             var coordinatesStr = JSON.stringify(coordinates).replace(/"/g, '&quot;'); // Escape quotation marks
             var popupContent = '<div>';
@@ -276,7 +284,7 @@
             popupContent += '</div>';
             return popupContent;
         }
-
+    
         document.addEventListener('DOMContentLoaded', initializeMap);
     </script>
 
