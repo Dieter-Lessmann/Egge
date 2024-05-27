@@ -61,7 +61,7 @@
     </div>
 
     <div class="legend">
-        <div class="legend-item"><i class="fa fa-map-marker" style="color:#0066ff"></i><span class="legend-text">Legende</span></div>
+        '<div class="legend-item"><i class="fa fa-map-marker" style="color:#006ff"></i><span class="legend-text">Legende</span></div>',
         <span class="legend-text">Legende</span>
     </div>
 
@@ -205,34 +205,35 @@
     
             var legend = L.control({ position: 'bottomright' });
     
-            legend.onAdd = function () {
-                var div = L.DomUtil.create('div', 'legend');
-                var labels = [
-                    '<div class="legend-item"><i class="fa fa-map-marker" style="color:#006ff"></i><span class="legend-text">Legende</span></div>',
-                    '<img src="icons/Track-Menue.png" style="width:16px;height:16px;"> Track',
-                    '<img src="icons/logo-twitter.svg" style="width:16px;height:16px;"> Adlerwarte',
-                    '<img src="icons/car.svg" style="width:16px;height:16px;"> Treffpunkt - Parkplatz Adlerwarte',
-                    '<img src="icons/golf.svg" style="width:16px;height:16px;"> Falkenburg',
-                    '<img src="icons/flag.svg" style="width:16px;height:16px;"> Externsteine',
-                    '<img src="icons/cafe.svg" style="width:16px;height:16px;"> Waldesruh Wanderhotel Externsteine',
-                    '<img src="icons/location.svg" style="width:16px;height:16px;"> Rigi Hütte',
-                    '<img src="icons/restaurant.svg" style="width:16px;height:16px;"> Landhaus Hirschsprung'
-                ];
-                div.innerHTML = labels.join('<br>');
-                return div;
-            };
-    
+        legend.onAdd = function () {
+            var div = L.DomUtil.create('div', 'legend');
+            var labels = [
+                '<div class="legend-item"><i class="fa fa-map-marker" style="color:#0066ff"></i><span class="legend-text">Legende</span></div>',
+                '<img src="icons/Track-Menue.png" style="width:16px;height:16px;"> Track',
+                '<img src="icons/logo-twitter.svg" style="width:16px;height:16px;"> Adlerwarte',
+                '<img src="icons/car.svg" style="width:16px;height:16px;"> Treffpunkt - Parkplatz Adlerwarte',
+                '<img src="icons/golf.svg" style="width:16px;height:16px;"> Falkenburg',
+                '<img src="icons/flag.svg" style="width:16px;height:16px;"> Externsteine',
+                '<img src="icons/cafe.svg" style="width:16px;height:16px;"> Waldesruh Wanderhotel Externsteine',
+                '<img src="icons/location.svg" style="width:16px;height:16px;"> Rigi Hütte',
+                '<img src="icons/restaurant.svg" style="width:16px;height:16px;"> Landhaus Hirschsprung'
+            ];
+            div.innerHTML = labels.join('<br>');
+            return div;
+        };
+
             legend.addTo(map);
         }
     
-        function openHeightProfilePopup(coordinates) {
+        function openHeightProfilePopup(coordinatesStr) {
+            var coordinates = JSON.parse(coordinatesStr);
             var heightProfileWindow = window.open('height_profile.html', 'Height Profile', 'width=600,height=400');
             heightProfileWindow.onload = function () {
                 if (!heightProfileWindow.loaded) {
                     heightProfileWindow.loaded = true;
-    
+        
                     var heights = coordinates.map(coord => coord[2]);
-    
+        
                     var ctx = heightProfileWindow.document.getElementById('heightProfile').getContext('2d');
                     var chart = new Chart(ctx, {
                         type: 'line',
@@ -261,12 +262,12 @@
                                     }
                                 }
                             }
-                        });
-                    }
+                        }
+                    });
                 }
             };
         }
-    
+
         function createTrackPopup(coordinates) {
             var coordinatesStr = JSON.stringify(coordinates).replace(/"/g, '&quot;'); // Escape quotation marks
             var popupContent = '<div>';
@@ -275,7 +276,7 @@
             popupContent += '</div>';
             return popupContent;
         }
-    
+
         document.addEventListener('DOMContentLoaded', initializeMap);
     </script>
 
