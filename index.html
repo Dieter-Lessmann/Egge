@@ -147,4 +147,152 @@
                             marker = L.marker(latlng, {
                                 icon: L.icon({
                                     iconUrl: 'icons/location.svg',
-                                    iconSize: [32,
+                                    iconSize: [32, 32]
+                                })
+                            });
+                            break;
+                        case "Restaurant":
+                            marker = L.marker(latlng, {
+                                icon: L.icon({
+                                    iconUrl: 'icons/restaurant.svg',
+                                    iconSize: [32, 32]
+                                })
+                            });
+                            break;
+                        default:
+                            marker = L.circleMarker(latlng, {
+                                radius: 8,
+                                fillColor: "#0066ff",
+                                color: "#0066ff",
+                                weight: 0.8,
+                                opacity: 1,
+                                fillOpacity: 0.6
+                            });
+                            break;
+                    }
+                    return marker;
+                },
+                onEachFeature: function (feature, layer) {
+                    var popupContent = "<b>" + feature.properties.Bezeichnung + "</b><br>" +
+                        "Adresse: " + feature.properties.Strasse + " " + feature.properties.Hausnr + "<br>" +
+                        feature.properties.PLZ + " " + feature.properties.Ort + "<br>";
+                    if (feature.properties.Homepage !== "") {
+                        popupContent += "Homepage: <a href='" + feature.properties.Homepage + "' target='_blank'>" + feature.properties.Homepage + "</a><br>";
+                    }
+                    layer.bindPopup(popupContent);
+                }
+            }).addTo(group);
+    
+            var track = L.geoJSON(track_egge_2, {
+                style: function (feature) {
+                    return { color: 'red' };
+                },
+                onEachFeature: function (feature, layer) {
+                    var coordinates = feature.geometry.coordinates;
+                    trackKoordinaten.push(...coordinates);
+    
+                    layer.on('click', function(e) {
+                        var popupContent = createTrackPopup(coordinates, layer.getPopup());
+                        layer.bindPopup(popupContent).openPopup();
+                    });
+    
+                    layer.on('mouseover', function () {
+                        layer.setStyle({ weight: 8 });
+                    });
+    
+                    layer.on('mouseout', function () {
+                        layer.setStyle({ weight: 3 });
+                    });
+                }
+            }).addTo(group);
+    
+            var bbox = group.getBounds();
+            map.fitBounds(bbox);
+    
+            var scale = L.control.scale().addTo(map);
+    
+            currentMarker = L.marker([0, 0], { opacity: 0 }).addTo(map);
+    
+            var legend = L.control({ position: 'bottomright' });
+    
+            legend.onAdd = function () {
+                var div = L.DomUtil.create('div', 'legend');
+                var labels = [
+                    '<div class="legend-item"><i class="fa fa-map-marker" style="color:#0066ff"></i><span class="legend-text">Legende</span></div>',
+                    '<img src="icons/Track-Menue.png" style="width:16px;height:16px;"> Track',
+                    '<img src="icons/logo-twitter.svg" style="width:16px;height:16px;"> Adlerwarte',
+                    '<img src="icons/car.svg" style="width:16px;height:16px;"> Treffpunkt - Parkplatz Adlerwarte',
+                    '<img src="icons/golf.svg" style="width:16px;height:16px;"> Falkenburg',
+                    '<img src="icons/flag.svg" style="width:16px;height:16px;"> Externsteine',
+                    '<img src="icons/cafe.svg" style="width:16px;height:16px;"> Waldesruh Wanderhotel Externsteine',
+                    '<img src="icons/location.svg" style="width:16px;height:16px;"> Rigi Hütte',
+                    '<img src="icons/restaurant.svg" style="width:16px;height:16px;"> Landhaus Hirschsprung'
+                ];
+                div.innerHTML = labels.join('<br>');
+                return div;
+            };
+    
+            legend.addTo(map);
+        }
+    
+        function openHeightProfilePopup(coordinatesStr, popup) {
+            var coordinates = JSON.parse(coordinatesStr);
+            var heightProfileWindow = window.open('height_profile.html', 'Height Profile', 'width=600,height=400');
+            heightProfileWindow.onload = function () {
+                if (!heightProfileWindow.loaded) {
+                    heightProfileWindow.loaded = true;
+    
+                    var heights = coordinates.map(coord => coord[2]);
+    
+                    var ctx = heightProfileWindow.document.getElementById('heightProfile').getContext('2d');
+                    var chart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: heights.map((h, i) => i),
+                            datasets: [{
+                                label: 'Height Profile',
+                                data: heights,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: 'Height (m)'
+                                    }
+                                },
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Point Index'
+                                    }
+                                }
+                            }
+                        }
+                    });
+    
+                    if (popup) {
+                        popup.close();
+                    }
+                }
+            };
+        }
+    
+        function createTrackPopup(coordinates, popup) {
+            var coordinatesStr = JSON.stringify(coordinates).replace(/"/g, '&quot;'); // Escape quotation marks
+            var popupContent = '<div>';
+            popupContent += '<p>Wir starten vom Parkplatz der Adlerwarte, entgegen dem Uhrzeigersinn, über die Ruine der Falkenburg zu den Externsteinen.</p>';
+            popupContent += '<button onclick="openHeightProfilePopup(&quot;' + coordinatesStr + '&quot;, ' + popup + ')">Höhenprofil anzeigen</button>';
+            popupContent += '</div>';
+            return popupContent;
+        }
+    
+        document.addEventListener('DOMContentLoaded', initializeMap);
+    </script>
+
+</body>
+</html>
