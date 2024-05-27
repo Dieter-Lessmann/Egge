@@ -192,7 +192,7 @@
                     trackKoordinaten.push(...coordinates);
     
                     layer.on('click', function(e) {
-                        var popupContent = createTrackPopup(coordinates, layer.getPopup());
+                        var popupContent = createTrackPopup(coordinates);
                         layer.bindPopup(popupContent).openPopup();
                     });
     
@@ -224,9 +224,9 @@
                     '<img src="icons/car.svg" style="width:16px;height:16px;"> Treffpunkt - Parkplatz Adlerwarte',
                     '<img src="icons/golf.svg" style="width:16px;height:16px;"> Falkenburg',
                     '<img src="icons/flag.svg" style="width:16px;height:16px;"> Externsteine',
-                    '<img src="icons/cafe.svg" style="width:16px;height:16px;"> Waldesruh Wanderhotel Externsteine',
-                    '<img src="icons/location.svg" style="width:16px;height:16px;"> Rigi Hütte',
-                    '<img src="icons/restaurant.svg" style="width:16px;height:16px;"> Landhaus Hirschsprung'
+                    '<img src="icons/cafe.svg" style="width:16px;height:16px;"> Velmerstot (Aussichtsturm)',
+                    '<img src="icons/location.svg" style="width:16px;height:16px;"> Lippische Velmerstot (Hütte)',
+                    '<img src="icons/restaurant.svg" style="width:16px;height:16px;"> Bärenstein (Hütte)'
                 ];
                 div.innerHTML = labels.join('<br>');
                 return div;
@@ -235,64 +235,75 @@
             legend.addTo(map);
         }
     
-        function openHeightProfilePopup(coordinatesStr, popup) {
-            var coordinates = JSON.parse(coordinatesStr);
-            var heightProfileWindow = window.open('height_profile.html', 'Height Profile', 'width=600,height=400');
-            heightProfileWindow.onload = function () {
-                if (!heightProfileWindow.loaded) {
-                    heightProfileWindow.loaded = true;
+        function createTrackPopup(coordinates) {
+            var popupDiv = document.createElement('div');
+            popupDiv.className = 'track-popup';
     
-                    var heights = coordinates.map(coord => coord[2]);
+            var title = document.createElement('h4');
+            title.innerText = 'Track Details';
+            popupDiv.appendChild(title);
     
-                    var ctx = heightProfileWindow.document.getElementById('heightProfile').getContext('2d');
-                    var chart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: heights.map((h, i) => i),
-                            datasets: [{
-                                label: 'Height Profile',
-                                data: heights,
-                                borderColor: 'rgba(75, 192, 192, 1)',
-                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            scales: {
-                                y: {
-                                    title: {
-                                        display: true,
-                                        text: 'Height (m)'
-                                    }
-                                },
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: 'Point Index'
-                                    }
-                                }
-                            }
+            var button = document.createElement('button');
+            button.innerText = 'Show Elevation Profile';
+            button.onclick = function() {
+                openHeightProfilePopup(coordinates);
+            };
+            popupDiv.appendChild(button);
+    
+            return popupDiv;
+        }
+    
+        function openHeightProfilePopup(coordinates) {
+            var latlngs = coordinates.map(function(coord) {
+                return [coord[1], coord[0]];
+            });
+    
+            var data = {
+                labels: latlngs.map(function(latlng) { return latlng[1].toFixed(5) + ", " + latlng[0].toFixed(5); }),
+                datasets: [{
+                    label: 'Elevation',
+                    data: latlngs.map(function(latlng) { return latlng[2]; }),
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    fill: false
+                }]
+            };
+    
+            var options = {
+                responsive: true,
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Distance'
                         }
-                    });
-    
-                    if (popup) {
-                        popup.close();
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Elevation (m)'
+                        }
                     }
                 }
             };
+    
+            var chartCanvas = document.createElement('canvas');
+            chartCanvas.id = 'elevationChartCanvas';
+    
+            var chartContainer = document.getElementById('elevationChart');
+            chartContainer.innerHTML = '';
+            chartContainer.appendChild(chartCanvas);
+    
+            new Chart(chartCanvas, {
+                type: 'line',
+                data: data,
+                options: options
+            });
         }
     
-        function createTrackPopup(coordinates, popup) {
-            var coordinatesStr = JSON.stringify(coordinates).replace(/"/g, '&quot;'); // Escape quotation marks
-            var popupContent = '<div>';
-            popupContent += '<p>Wir starten vom Parkplatz der Adlerwarte, entgegen dem Uhrzeigersinn, über die Ruine der Falkenburg zu den Externsteinen.</p>';
-            popupContent += '<button onclick="openHeightProfilePopup(&quot;' + coordinatesStr + '&quot;, ' + popup + ')">Höhenprofil anzeigen</button>';
-            popupContent += '</div>';
-            return popupContent;
-        }
-    
-        document.addEventListener('DOMContentLoaded', initializeMap);
+        initializeMap();
     </script>
-
 </body>
 </html>
