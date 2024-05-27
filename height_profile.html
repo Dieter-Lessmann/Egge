@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="DE-de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,40 +8,29 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/track_egge_2.js"></script>
     <script src="js/height_profile_script.js"></script>
-    <style>
-      .leaflet-container a.leaflet-popup-close-button {
-        display: none;
-      }
-      .leaflet-default-icon-path {
-        background-image: url('https://unpkg.com/leaflet@1.7.1/dist/images/');
-      }
-    </style>
-
-    <style>
-        #map {
-            height: 500px; /* Höhe der Karte anpassen */
-        }
-        #heightProfile {
-            width: 100%;
-            height: 400px; /* Höhe des Canvas anpassen */
-        }
-    </style>
 </head>
 <body>
-    <div id="map"></div> <!-- Hier wird die Karte angezeigt -->
+    <!-- Body-Inhalt -->
     <canvas id="heightProfile"></canvas>
     <script>
-        window.onload = function() {
-            var canvas = document.getElementById("heightProfile");
-            if (canvas) {
-                // Lade die Koordinaten und rufe dann die Funktion zur Erstellung des Höhenprofils auf
-                var coordinates = loadCoordinates();
-                var cumulativeDistances = calculateCumulativeDistances(coordinates);
-                createHeightProfile(coordinates, cumulativeDistances, canvas);
-            } else {
-                console.error("Canvas element not found.");
-            }
-        };
+		window.onload = function() {
+			var canvas = document.getElementById("heightProfile");
+			if (canvas) {
+				// Lade die Koordinaten und rufe dann die Funktion zur Erstellung des Höhenprofils auf
+				var coordinates = loadCoordinates();
+				var cumulativeDistances = calculateCumulativeDistances(coordinates);
+				createHeightProfile(coordinates, cumulativeDistances, canvas);
+			} else {
+				console.error("Canvas element not found.");
+			}
+			
+		    // Funktion zum Aktualisieren der Markerposition
+		function updateMarker(lat, lng) {
+			currentMarker.setLatLng([lat, lng]);
+			currentMarker.setOpacity(1); // Sichtbar machen
+			map.panTo([lat, lng]);
+		};
+	}
     </script>
 </body>
 </html>
