@@ -268,10 +268,10 @@
         }
     
         function createTrackPopup(coordinates) {
-            var coordinatesStr = JSON.stringify(coordinates).replace(/"/g, '&quot;'); // Entkomme Anführungszeichen
+            var coordinatesStr = JSON.stringify(coordinates).replace(/"/g, '&quot;'); // Escape quotation marks
             var popupContent = '<div>';
             popupContent += '<p>Wir starten vom Parkplatz der Adlerwarte, entgegen dem Uhrzeigersinn, über die Ruine der Falkenburg zu den Externsteinen.</p>';
-            popupContent += '<button onclick="openHeightProfilePopup(' + coordinatesStr + ')">Höhenprofil anzeigen</button>';
+            popupContent += '<button onclick="openHeightProfilePopup(&quot;' + coordinatesStr + '&quot;)">Höhenprofil anzeigen</button>';
             popupContent += '</div>';
             return popupContent;
         }
