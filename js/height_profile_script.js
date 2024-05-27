@@ -1,15 +1,22 @@
 // Globale Variablen für die Karte und den Marker
 var map;
 var currentMarker;
+var coordinates; // Globale Definition der coordinates-Variable
 
 // Initialisieren Sie die Karte und den Marker
 function initializeMap() {
-    map = L.map('map').setView([51.877622958, 8.896320015], 13); // Beispielkoordinaten und Zoomstufe
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
+    // Überprüfen, ob das Element mit der ID 'map' existiert
+    var mapContainer = document.getElementById('map');
+    if (mapContainer) {
+        map = L.map('map').setView([51.877622958, 8.896320015], 13); // Beispielkoordinaten und Zoomstufe
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
 
-    currentMarker = L.marker([51.877622958, 8.896320015], {opacity: 0}).addTo(map); // Startmarker, unsichtbar
+        currentMarker = L.marker([51.877622958, 8.896320015], {opacity: 0}).addTo(map); // Startmarker, unsichtbar
+    } else {
+        console.error("Map container not found.");
+    }
 }
 
 // Funktion zum Laden der Koordinaten aus der track_egge_2.js Datei
@@ -18,9 +25,6 @@ function loadCoordinates() {
     // Hier wird ein Beispiel verwendet, um die Funktionalität zu simulieren
     return track_egge_2.features[0].geometry.coordinates[0];
 }
-
-// Deklaration der Variable außerhalb des Ereignishandlers
-var coordinates;
 
 // Funktion zur Erstellung des Höhenprofils
 function createHeightProfile(coordinates, cumulativeDistances, canvas) {
@@ -187,7 +191,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Funktion zum Aktualisieren der Markerposition
     window.updateMarker = function(lat, lng) {
-        // Deine Logik zum Aktualisieren des Markers hier
         console.log(`Marker updated to: ${lat}, ${lng}`);
         if (currentMarker) {
             currentMarker.setLatLng([lat, lng]);
