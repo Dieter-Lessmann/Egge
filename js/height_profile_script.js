@@ -1,3 +1,17 @@
+// Globale Variablen für die Karte und den Marker
+var map;
+var currentMarker;
+
+// Initialisieren Sie die Karte und den Marker
+function initializeMap() {
+    map = L.map('map').setView([51.877622958, 8.896320015], 13); // Beispielkoordinaten und Zoomstufe
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    currentMarker = L.marker([51.877622958, 8.896320015], {opacity: 0}).addTo(map); // Startmarker, unsichtbar
+}
+
 // Funktion zum Laden der Koordinaten aus der track_egge_2.js Datei
 function loadCoordinates() {
     // Annahme: Die Funktion loadCoordinates() ist in track_egge_2.js definiert und gibt die Koordinaten zurück
@@ -161,6 +175,7 @@ function getLatLngFromChartX(chartX) {
 
 // Hier wird das Profil erstellt, nachdem die Koordinaten und Distanzen geladen wurden
 document.addEventListener("DOMContentLoaded", function() {
+    initializeMap(); // Initialisiere die Karte und den Marker
     coordinates = loadCoordinates();
     const cumulativeDistances = calculateCumulativeDistances(coordinates);
     const canvas = document.getElementById("heightProfile");
