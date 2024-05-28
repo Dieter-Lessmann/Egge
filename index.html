@@ -217,8 +217,8 @@
 
     // GeoJSON-Daten laden und dann die Karte initialisieren
     Promise.all([
-        fetch('js/bibliotheken.geojson').then(response => response.json()),
-        fetch('js/track_egge_2.geojson').then(response => response.json())
+        fetch('js/bibliotheken.js').then(response => response.json()),
+        fetch('js/track_egge_2.js').then(response => response.json())
     ]).then(([bibliothekenData, trackData]) => {
         initializeMap(bibliothekenData, trackData);
     }).catch(error => {
