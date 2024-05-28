@@ -10,7 +10,6 @@ var coordinates = loadCoordinates(); // Initialisierung der Koordinaten
 function createHeightProfile(coordinates, cumulativeDistances, canvas) {
     var heights = extractHeights(coordinates);
 
-    // Überprüfe, ob das Diagramm bereits existiert, bevor es zerstört wird
     var existingChart = Chart.getChart(canvas);
     if (existingChart) {
         existingChart.destroy();
@@ -60,7 +59,11 @@ function createHeightProfile(coordinates, cumulativeDistances, canvas) {
                         },
                         label: function(tooltipItem) {
                             var height = tooltipItem.raw;
-                            return 'Höhe: ' + height.toFixed(0) + ' m';
+                            if (typeof height === 'number') {
+                                return 'Höhe: ' + height.toFixed(0) + ' m';
+                            } else {
+                                return 'Höhe: ' + height + ' m';
+                            }
                         }
                     }
                 }
@@ -82,7 +85,6 @@ function createHeightProfile(coordinates, cumulativeDistances, canvas) {
     });
 }
 
-// Funktion zur Berechnung der kumulativen Distanzen zwischen den Punkten
 function calculateCumulativeDistances(coordinates) {
     let cumulativeDistances = [0];
     let totalDistance = 0;
@@ -94,9 +96,8 @@ function calculateCumulativeDistances(coordinates) {
     return cumulativeDistances;
 }
 
-// Funktion zur Berechnung der Distanz zwischen zwei Punkten (Haversine-Formel)
 function calculateDistance(coord1, coord2) {
-    var R = 6371; // Radius der Erde in Kilometern
+    var R = 6371;
     var lat1 = deg2rad(coord1[1]);
     var lon1 = deg2rad(coord1[0]);
     var lat2 = deg2rad(coord2[1]);
@@ -114,13 +115,13 @@ function calculateDistance(coord1, coord2) {
     return distance;
 }
 
-// Funktion zur Extrahierung der Höhendaten aus den Koordinaten
 function extractHeights(coordinates) {
-    const heights = coordinates.map(coord => coord[2]);
-    return heights;
+    return coordinates.map(coord => {
+        const height = parseFloat(coord[2]);
+        return isNaN(height) ? 0 : height;
+    });
 }
 
-// Funktion zum Abrufen der Lat/Lng aus der X-Koordinate des Diagramms
 function getLatLngFromChartX(chartX) {
     const index = Math.round(chartX);
     if (index >= 0 && index < coordinates.length) {
@@ -131,21 +132,10 @@ function getLatLngFromChartX(chartX) {
     return null;
 }
 
-// Funktion zum Konvertieren von Grad in Radiant
 function deg2rad(deg) {
     return deg * (Math.PI / 180);
 }
 
-// Funktion zum Aktualisieren der Markerposition
-function updateMarker(lat, lng) {
-    if (window.opener) {
-        window.opener.updateMarker(lat, lng);
-    } else {
-        console.error("window.opener is not defined");
-    }
-}
-
-// Initialisierung des Diagramms nach dem Laden der Seite
 window.onload = function() {
     var canvas = document.getElementById('heightProfile');
     if (canvas) {
