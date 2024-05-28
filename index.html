@@ -1,190 +1,221 @@
-<script>
-    var map;
-    var currentMarker = null;
-    var trackKoordinaten = [];
-    var popupWindow;
-    var marker;  // Globale Variable für den Marker
-
-    function initializeMap() {
-        if (map) {
-            map.remove(); // Entferne die alte Karte, wenn sie existiert
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Egge Hiking Map</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 600px;
         }
+        .legend {
+            background: white;
+            padding: 10px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+        }
+        .legend-item img {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <!-- Your script -->
+    <script>
+        var map;
+        var currentMarker = null;
+        var trackKoordinaten = [];
+        var popupWindow;
 
-        map = L.map('map').setView([51.9, 8.7], 13);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        var group = L.featureGroup().addTo(map);
-        var bib = L.geoJson(bibliotheken, {
-            pointToLayer: function (feature, latlng) {
-                var art = feature.properties.Art;
-                var marker;
-                switch (art) {
-                    case "Öffentlicher Tierpark":
-                        marker = L.marker(latlng, {
-                            icon: L.icon({
-                                iconUrl: 'icons/logo-twitter.svg',
-                                iconSize: [32, 32]
-                            })
-                        });
-                        break;
-                    case "Öffentlicher_Parkplatz":
-                        marker = L.marker(latlng, {
-                            icon: L.icon({
-                                iconUrl: 'icons/car.svg',
-                                iconSize: [32, 32]
-                            })
-                        });
-                        break;
-                    case "Öffentliche Burgruine":
-                        marker = L.marker(latlng, {
-                            icon: L.icon({
-                                iconUrl: 'icons/golf.svg',
-                                iconSize: [32, 32]
-                            })
-                        });
-                        break;
-                    case "Öffentliches Denkmal":
-                        marker = L.marker(latlng, {
-                            icon: L.icon({
-                                iconUrl: 'icons/flag.svg',
-                                iconSize: [32, 32]
-                            })
-                        });
-                        break;
-                    case "Hotel":
-                        marker = L.marker(latlng, {
-                            icon: L.icon({
-                                iconUrl: 'icons/cafe.svg',
-                                iconSize: [32, 32]
-                            })
-                        });
-                        break;
-                    case "Hütte":
-                        marker = L.marker(latlng, {
-                            icon: L.icon({
-                                iconUrl: 'icons/location.svg',
-                                iconSize: [32, 32]
-                            })
-                        });
-                        break;
-                    case "Restaurant":
-                        marker = L.marker(latlng, {
-                            icon: L.icon({
-                                iconUrl: 'icons/restaurant.svg',
-                                iconSize: [32, 32]
-                            })
-                        });
-                        break;
-                    default:
-                        marker = L.circleMarker(latlng, {
-                            radius: 8,
-                            fillColor: "#0066ff",
-                            color: "#0066ff",
-                            weight: 0.8,
-                            opacity: 1,
-                            fillOpacity: 0.6
-                        });
-                        break;
-                }
-                return marker;
-            },
-            onEachFeature: function (feature, layer) {
-                var popupContent = "<b>" + feature.properties.Bezeichnung + "</b><br>" +
-                    "Adresse: " + feature.properties.Strasse + " " + feature.properties.Hausnr + "<br>" +
-                    feature.properties.PLZ + " " + feature.properties.Ort + "<br>";
-                if (feature.properties.Homepage !== "") {
-                    popupContent += "Homepage: <a href='" + feature.properties.Homepage + "' target='_blank'>" + feature.properties.Homepage + "</a><br>";
-                }
-                layer.bindPopup(popupContent);
+        function initializeMap() {
+            if (map) {
+                map.remove(); // Entferne die alte Karte, wenn sie existiert
             }
-        }).addTo(group);
 
-        var track = L.geoJSON(track_egge_2, {
-            style: function (feature) {
-                return { color: 'red' };
-            },
-            onEachFeature: function (feature, layer) {
-                var coordinates = feature.geometry.coordinates;
-                trackKoordinaten.push(...coordinates);
+            map = L.map('map').setView([51.9, 8.7], 13);
 
-                layer.on('click', function(e) {
-                    var popupContent = createTrackPopup(coordinates);
-                    layer.bindPopup(popupContent).openPopup();
-                });
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
 
-                layer.on('mouseover', function () {
-                    layer.setStyle({ weight: 8 });
-                });
+            var group = L.featureGroup().addTo(map);
+            var bib = L.geoJson(bibliotheken, {
+                pointToLayer: function (feature, latlng) {
+                    var art = feature.properties.Art;
+                    var marker;
+                    switch (art) {
+                        case "Öffentlicher Tierpark":
+                            marker = L.marker(latlng, {
+                                icon: L.icon({
+                                    iconUrl: 'icons/logo-twitter.svg',
+                                    iconSize: [32, 32]
+                                })
+                            });
+                            break;
+                        case "Öffentlicher_Parkplatz":
+                            marker = L.marker(latlng, {
+                                icon: L.icon({
+                                    iconUrl: 'icons/car.svg',
+                                    iconSize: [32, 32]
+                                })
+                            });
+                            break;
+                        case "Öffentliche Burgruine":
+                            marker = L.marker(latlng, {
+                                icon: L.icon({
+                                    iconUrl: 'icons/golf.svg',
+                                    iconSize: [32, 32]
+                                })
+                            });
+                            break;
+                        case "Öffentliches Denkmal":
+                            marker = L.marker(latlng, {
+                                icon: L.icon({
+                                    iconUrl: 'icons/flag.svg',
+                                    iconSize: [32, 32]
+                                })
+                            });
+                            break;
+                        case "Hotel":
+                            marker = L.marker(latlng, {
+                                icon: L.icon({
+                                    iconUrl: 'icons/cafe.svg',
+                                    iconSize: [32, 32]
+                                })
+                            });
+                            break;
+                        case "Hütte":
+                            marker = L.marker(latlng, {
+                                icon: L.icon({
+                                    iconUrl: 'icons/location.svg',
+                                    iconSize: [32, 32]
+                                })
+                            });
+                            break;
+                        case "Restaurant":
+                            marker = L.marker(latlng, {
+                                icon: L.icon({
+                                    iconUrl: 'icons/restaurant.svg',
+                                    iconSize: [32, 32]
+                                })
+                            });
+                            break;
+                        default:
+                            marker = L.circleMarker(latlng, {
+                                radius: 8,
+                                fillColor: "#0066ff",
+                                color: "#0066ff",
+                                weight: 0.8,
+                                opacity: 1,
+                                fillOpacity: 0.6
+                            });
+                            break;
+                    }
+                    return marker;
+                },
+                onEachFeature: function (feature, layer) {
+                    var popupContent = "<b>" + feature.properties.Bezeichnung + "</b><br>" +
+                        "Adresse: " + feature.properties.Strasse + " " + feature.properties.Hausnr + "<br>" +
+                        feature.properties.PLZ + " " + feature.properties.Ort + "<br>";
+                    if (feature.properties.Homepage !== "") {
+                        popupContent += "Homepage: <a href='" + feature.properties.Homepage + "' target='_blank'>" + feature.properties.Homepage + "</a><br>";
+                    }
+                    layer.bindPopup(popupContent);
+                }
+            }).addTo(group);
 
-                layer.on('mouseout', function () {
-                    layer.setStyle({ weight: 3 });
-                });
+            var track = L.geoJSON(track_egge_2, {
+                style: function (feature) {
+                    return { color: 'red' };
+                },
+                onEachFeature: function (feature, layer) {
+                    var coordinates = feature.geometry.coordinates;
+                    trackKoordinaten.push(...coordinates);
+
+                    layer.on('click', function(e) {
+                        var popupContent = createTrackPopup(coordinates);
+                        layer.bindPopup(popupContent).openPopup();
+                    });
+
+                    layer.on('mouseover', function () {
+                        layer.setStyle({ weight: 8 });
+                    });
+
+                    layer.on('mouseout', function () {
+                        layer.setStyle({ weight: 3 });
+                    });
+                }
+            }).addTo(group);
+
+            var bbox = group.getBounds();
+            map.fitBounds(bbox);
+
+            var scale = L.control.scale().addTo(map);
+
+            currentMarker = L.marker([0, 0], { opacity: 0 }).addTo(map);
+
+            var legend = L.control({ position: 'bottomright' });
+
+            legend.onAdd = function () {
+                var div = L.DomUtil.create('div', 'legend');
+                var labels = [
+                    '<div class="legend-item"><i class="fa fa-map-marker" style="color:#0066ff"></i><span class="legend-text">Legende</span></div>',
+                    '<img src="icons/Track-Menue.png" style="width:16px;height:16px;"> Track',
+                    '<img src="icons/logo-twitter.svg" style="width:16px;height:16px;"> Adlerwarte',
+                    '<img src="icons/car.svg" style="width:16px;height:16px;"> Treffpunkt - Parkplatz Adlerwarte',
+                    '<img src="icons/golf.svg" style="width:16px;height:16px;"> Falkenburg',
+                    '<img src="icons/flag.svg" style="width:16px;height:16px;"> Externsteine',
+                    '<img src="icons/cafe.svg" style="width:16px;height:16px;"> Velmerstot (Aussichtsturm)',
+                    '<img src="icons/location.svg" style="width:16px;height:16px;"> Lippische Velmerstot (Hütte)',
+                    '<img src="icons/restaurant.svg" style="width:16px;height:16px;"> Bärenstein (Hütte)'
+                ];
+                div.innerHTML = labels.join('<br>');
+                return div;
+            };
+
+            legend.addTo(map);
+        }
+
+        function createTrackPopup(coordinates) {
+            var coordinatesStr = JSON.stringify(coordinates).replace(/"/g, '&quot;');
+            var popupContent = '<div>';
+            popupContent += '<p>Wir starten vom Parkplatz der Adlerwarte, entgegen dem Uhrzeigersinn, über die Ruine der Falkenburg zu den Externsteinen.</p>';
+            popupContent += '<button onclick="openHeightProfilePopup(&quot;' + coordinatesStr + '&quot;)">Höhenprofil anzeigen</button>';
+            popupContent += '</div>';
+            return popupContent;
+        }
+
+        function openHeightProfilePopup(coordinatesStr) {
+            // Schließe das Popup, wenn es bereits offen ist
+            if (popupWindow && !popupWindow.closed) {
+                popupWindow.close();
             }
-        }).addTo(group);
-
-        var bbox = group.getBounds();
-        map.fitBounds(bbox);
-
-        var scale = L.control.scale().addTo(map);
-
-        currentMarker = L.marker([0, 0], { opacity: 0 }).addTo(map);
-
-        var legend = L.control({ position: 'bottomright' });
-
-        legend.onAdd = function () {
-            var div = L.DomUtil.create('div', 'legend');
-            var labels = [
-                '<div class="legend-item"><i class="fa fa-map-marker" style="color:#0066ff"></i><span class="legend-text">Legende</span></div>',
-                '<img src="icons/Track-Menue.png" style="width:16px;height:16px;"> Track',
-                '<img src="icons/logo-twitter.svg" style="width:16px;height:16px;"> Adlerwarte',
-                '<img src="icons/car.svg" style="width:16px;height:16px;"> Treffpunkt - Parkplatz Adlerwarte',
-                '<img src="icons/golf.svg" style="width:16px;height:16px;"> Falkenburg',
-                '<img src="icons/flag.svg" style="width:16px;height:16px;"> Externsteine',
-                '<img src="icons/cafe.svg" style="width:16px;height:16px;"> Velmerstot (Aussichtsturm)',
-                '<img src="icons/location.svg" style="width:16px;height:16px;"> Lippische Velmerstot (Hütte)',
-                '<img src="icons/restaurant.svg" style="width:16px;height:16px;"> Bärenstein (Hütte)'
-            ];
-            div.innerHTML = labels.join('<br>');
-            return div;
-        };
-
-        legend.addTo(map);
-    }
-
-    function createTrackPopup(coordinates) {
-        var coordinatesStr = JSON.stringify(coordinates).replace(/"/g, '&quot;');
-        var popupContent = '<div>';
-        popupContent += '<p>Wir starten vom Parkplatz der Adlerwarte, entgegen dem Uhrzeigersinn, über die Ruine der Falkenburg zu den Externsteinen.</p>';
-        popupContent += '<button onclick="openHeightProfilePopup(&quot;' + coordinatesStr + '&quot;)">Höhenprofil anzeigen</button>';
-        popupContent += '</div>';
-        return popupContent;
-    }
-
-    function openHeightProfilePopup(coordinatesStr) {
-        // Schließe das Popup, wenn es bereits offen ist
-        if (popupWindow && !popupWindow.closed) {
-            popupWindow.close();
+            // Öffne ein neues Popup und übergebe die Koordinaten
+            popupWindow = window.open('height_profile.html', 'heightProfile', 'width=800,height=600');
+            popupWindow.onload = function () {
+                popupWindow.initializeHeightProfile(coordinatesStr);
+            };
         }
-        // Öffne ein neues Popup und übergebe die Koordinaten
-        popupWindow = window.open('height_profile.html', 'heightProfile', 'width=800,height=600');
-        popupWindow.onload = function () {
-            popupWindow.initializeHeightProfile(coordinatesStr);
-        };
-    }
 
-    function updateMarker(lat, lng) {
-        // Beispiel: Aktualisieren des Markers auf der Karte
-        if (currentMarker) {
-            currentMarker.setLatLng([lat, lng]);
-            currentMarker.setOpacity(1);
-            map.panTo([lat, lng]);
-        } else {
-            console.error("Current marker is not defined");
+        function updateMarker(lat, lng) {
+            // Beispiel: Aktualisieren des Markers auf der Karte
+            if (currentMarker) {
+                currentMarker.setLatLng([lat, lng]);
+                currentMarker.setOpacity(1);
+                map.panTo([lat, lng]);
+            } else {
+                console.error("Current marker is not defined");
+            }
         }
-    }
 
-    initializeMap();
-</script>
+        initializeMap();
+    </script>
+</body>
+</html>
