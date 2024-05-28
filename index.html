@@ -86,7 +86,7 @@
         var currentMarker = null;
         var trackKoordinaten = [];
         var popupWindow;
-        let marker;  // Globale Variable für den Marker
+        var marker;  // Globale Variable für den Marker
     
         function initializeMap() {
             if (map) {
@@ -246,13 +246,16 @@
             return popupContent;
         }
         
-        function openHeightProfilePopup() {
+        function openHeightProfilePopup(coordinatesStr) {
             // Schließe das Popup, wenn es bereits offen ist
             if (popupWindow && !popupWindow.closed) {
                 popupWindow.close();
             }
-            // Öffne ein neues Popup
+            // Öffne ein neues Popup und übergebe die Koordinaten
             popupWindow = window.open('height_profile.html', 'heightProfile', 'width=800,height=600');
+            popupWindow.onload = function () {
+                popupWindow.initializeHeightProfile(coordinatesStr);
+            };
         }
 
         function updateMarker(lat, lng) {
