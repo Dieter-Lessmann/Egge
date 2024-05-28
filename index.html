@@ -290,6 +290,15 @@
             };
         }
 
+        function updateMarker(lat, lng) {
+            // Beispiel: Aktualisieren des Markers auf der Karte
+            if (marker) {
+                marker.setLatLng([lat, lng]);
+            } else {
+                marker = L.marker([lat, lng]).addTo(map);
+            }
+        }
+
         initializeMap();
     </script>
 </body>
