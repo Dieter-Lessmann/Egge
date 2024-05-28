@@ -85,6 +85,7 @@
         var map;
         var currentMarker = null;
         var trackKoordinaten = [];
+        var popupWindow;
         let marker;  // Globale Variable für den Marker
     
         function initializeMap() {
@@ -245,44 +246,15 @@
             return popupContent;
         }
         
-        function openHeightProfilePopup(coordinatesStr) {
-            var coordinates = JSON.parse(coordinatesStr);
-        
-            var heightProfileWindow = window.open('height_profile.html', 'Height Profile', 'width=600,height=400');
-            heightProfileWindow.onload = function () {
-                var heights = coordinates.map(coord => coord[2]);
-                var ctx = heightProfileWindow.document.getElementById('heightProfile').getContext('2d');
-        
-                var chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: heights.map((h, i) => i),
-                        datasets: [{
-                            label: 'Height Profile',
-                            data: heights,
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                title: {
-                                    display: true,
-                                    text: 'Height (m)'
-                                }
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Point Index'
-                                }
-                            }
-                        }
-                    }
-                });
-        
+        function openHeightProfilePopup() {
+            // Schließe das Popup, wenn es bereits offen ist
+            if (popupWindow && !popupWindow.closed) {
+                popupWindow.close();
+            }
+            // Öffne ein neues Popup
+            popupWindow = window.open('height_profile.html', 'heightProfile', 'width=800,height=600');
+        }
+
                 setTimeout(() => {
                     if (popup) {
                         popup.close();
