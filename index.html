@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="css/popup-custom.css">
     <style>
         html { height: 100% }
-        body { height: 100%; margin: 0; padding: 0; }
+        body { height: 100%; margin: 0; padding: 0; }open
         .map { height: 100% }
     </style>
     <style>
@@ -255,9 +255,16 @@
     
         function openHeightProfilePopup(coordinates) {
             var latlngs = coordinates.map(function(coord) {
-                return [coord[1], coord[0]];
+                if (Array.isArray(coord) && coord.length >= 2) {
+                    return [parseFloat(coord[1]), parseFloat(coord[0])];
+                } else {
+                    console.error("Invalid coordinate format:", coord);
+                    return null;
+                }
+            }).filter(function(latlng) {
+                return latlng !== null;
             });
-    
+        
             var data = {
                 labels: latlngs.map(function(latlng) { return latlng[1].toFixed(5) + ", " + latlng[0].toFixed(5); }),
                 datasets: [{
@@ -268,7 +275,7 @@
                     fill: false
                 }]
             };
-    
+        
             var options = {
                 responsive: true,
                 scales: {
@@ -288,21 +295,21 @@
                     }
                 }
             };
-    
+        
             var chartCanvas = document.createElement('canvas');
             chartCanvas.id = 'elevationChartCanvas';
-    
+        
             var chartContainer = document.getElementById('elevationChart');
             chartContainer.innerHTML = '';
             chartContainer.appendChild(chartCanvas);
-    
+        
             new Chart(chartCanvas, {
                 type: 'line',
                 data: data,
                 options: options
             });
         }
-    
+
         initializeMap();
     </script>
 </body>
