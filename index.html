@@ -235,81 +235,55 @@
             legend.addTo(map);
         }
     
-        function createTrackPopup(coordinates) {
-            var popupDiv = document.createElement('div');
-            popupDiv.className = 'track-popup';
-    
-            var title = document.createElement('h4');
-            title.innerText = 'Track Details';
-            popupDiv.appendChild(title);
-    
-            var button = document.createElement('button');
-            button.innerText = 'Show Elevation Profile';
-            button.onclick = function() {
-                openHeightProfilePopup(coordinates);
-            };
-            popupDiv.appendChild(button);
-    
-            return popupDiv;
+        function createTrackPopup(coordinates, layer) {
+            var coordinatesStr = JSON.stringify(coordinates).replace(/"/g, '&quot;');
+            var popupContent = '<div>';
+            popupContent += '<p>Wir starten vom Parkplatz der Adlerwarte, entgegen dem Uhrzeigersinn, über die Ruine der Falkenburg zu den Externsteinen.</p>';
+            popupContent += '<button onclick="openHeightProfilePopup(&quot;' + coordinatesStr + '&quot;)">Höhenprofil anzeigen</button>';
+            popupContent += '</div>';
+            return popupContent;
         }
-    
-        function openHeightProfilePopup(coordinates) {
-            var latlngs = coordinates.map(function(coord) {
-                if (Array.isArray(coord) && coord.length >= 2) {
-                    return [parseFloat(coord[1]), parseFloat(coord[0])];
-                } else {
-                    console.error("Invalid coordinate format:", coord);
-                    return null;
-                }
-            }).filter(function(latlng) {
-                return latlng !== null;
-            });
         
-            var data = {
-                labels: latlngs.map(function(latlng) { return latlng[1].toFixed(5) + ", " + latlng[0].toFixed(5); }),
-                datasets: [{
-                    label: 'Elevation',
-                    data: latlngs.map(function(latlng) { return latlng[2]; }),
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1,
-                    fill: false
-                }]
-            };
+        function openHeightProfilePopup(coordinatesStr) {
+            var coordinates = JSON.parse(coordinatesStr);
         
-            var options = {
-                responsive: true,
-                scales: {
-                    x: {
-                        display: true,
-                        title: {
-                            display: true,
-                            text: 'Distance'
-                        }
+            var heightProfileWindow = window.open('height_profile.html', 'Height Profile', 'width=600,height=400');
+            heightProfileWindow.onload = function () {
+                var heights = coordinates.map(coord => coord[2]);
+                var ctx = heightProfileWindow.document.getElementById('heightProfile').getContext('2d');
+        
+                var chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: heights.map((h, i) => i),
+                        datasets: [{
+                            label: 'Height Profile',
+                            data: heights,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderWidth: 1
+                        }]
                     },
-                    y: {
-                        display: true,
-                        title: {
-                            display: true,
-                            text: 'Elevation (m)'
+                    options: {
+                        scales: {
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Height (m)'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Point Index'
+                                }
+                            }
                         }
                     }
-                }
+                });
             };
-        
-            var chartCanvas = document.createElement('canvas');
-            chartCanvas.id = 'elevationChartCanvas';
-        
-            var chartContainer = document.getElementById('elevationChart');
-            chartContainer.innerHTML = '';
-            chartContainer.appendChild(chartCanvas);
-        
-            new Chart(chartCanvas, {
-                type: 'line',
-                data: data,
-                options: options
-            });
         }
-
+        
         initializeMap();
     </script>
 </body>
