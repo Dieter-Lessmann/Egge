@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="css/popup-custom.css">
     <style>
         html { height: 100% }
-        body { height: 100%; margin: 0; padding: 0; }open
+        body { height: 100%; margin: 0; padding: 0; }
         .map { height: 100% }
     </style>
     <style>
@@ -237,7 +237,7 @@
             legend.addTo(map);
         }
     
-        function createTrackPopup(coordinates, layer) {
+        function createTrackPopup(coordinates) {
             var coordinatesStr = JSON.stringify(coordinates).replace(/"/g, '&quot;');
             var popupContent = '<div>';
             popupContent += '<p>Wir starten vom Parkplatz der Adlerwarte, entgegen dem Uhrzeigersinn, über die Ruine der Falkenburg zu den Externsteinen.</p>';
@@ -253,14 +253,6 @@
             }
             // Öffne ein neues Popup
             popupWindow = window.open('height_profile.html', 'heightProfile', 'width=800,height=600');
-        }
-
-                setTimeout(() => {
-                    if (popup) {
-                        popup.close();
-                    }
-                }, 500); // Schließe das Popup nach 500ms
-            };
         }
 
         function updateMarker(lat, lng) {
