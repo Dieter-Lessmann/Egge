@@ -281,9 +281,15 @@
                         }
                     }
                 });
+        
+                setTimeout(() => {
+                    if (popup) {
+                        popup.close();
+                    }
+                }, 500); // Schließe das Popup nach 500ms
             };
         }
-        
+
         initializeMap();
     </script>
 </body>
