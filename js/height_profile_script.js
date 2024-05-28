@@ -1,12 +1,9 @@
-// Funktion zum Laden der Koordinaten aus der track_egge_2.js Datei
 function loadCoordinates() {
     return track_egge_2.features[0].geometry.coordinates;
 }
 
-// Deklaration der Variable außerhalb des Ereignishandlers
-var coordinates = loadCoordinates(); // Initialisierung der Koordinaten
+var coordinates = loadCoordinates();
 
-// Funktion zur Erstellung des Höhenprofils
 function createHeightProfile(coordinates, cumulativeDistances, canvas) {
     var heights = extractHeights(coordinates);
 
